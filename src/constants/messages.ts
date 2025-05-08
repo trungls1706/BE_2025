@@ -1,0 +1,20 @@
+export const USERS_MESSAGES = {
+  VALIDATEION_ERROR: 'Validation error',
+  NAME_IS_REQUIRED: 'Name is required',
+  NAME_MUST_BE_STRING: 'Name must be string',
+  NAME_LENGTH_MUST_BE_BETWEEN_1_TO_100: 'Name length must be between 1 to 100',
+  EMAIL_ALREADY_EXISTS: 'Email already exists',
+  EMAIL_IS_REQUIRED: 'Email is required',
+  EMAIL_IS_INVALID: 'Email is invalid',
+  PASSWORD_IS_REQUIRED: 'Password is required',
+  CONFIRM_PASSWORD_IS_REQUIRED: 'Password is required',
+  PASSWORD_MUST_BE_STRING: 'Password must be string',
+  PASSWORD_LENGTH_MUST_BE_BETWEEN_6_TO_50: 'Password length must be between 6 to 50',
+  CONFIRM_PASSWORD_LENGTH_MUST_BE_BETWEEN_6_TO_50: 'Password length must be between 6 to 50',
+  PASSWORD_DOES_NOT_MATCH: 'Password does not match',
+  PASWORD_MUST_BE_STRONG: 'Password must be strong',
+  PASSWORD_MUST_BE_A_STRING: 'Password must be a string',
+  DATE_OF_BIRTH_MUST_BE_ISO8601: 'Date of Birth must be a valid ISO8601 date',
+  CONFIRM_PASSWORD_MUST_BE_STRONG: 'Confirm Password must contain at least 6 characters, 1 lowercase, 1 uppercase, 1 number, and 1 symbol',
+
+} as const
