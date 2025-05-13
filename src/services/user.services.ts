@@ -4,6 +4,8 @@ import { RegisterReqBody, LoginReqBody } from '~/models/requests/User.request'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import { ObjectId } from 'mongodb'
 
 class UserServices {
   constructor() {}
@@ -52,6 +54,10 @@ class UserServices {
       this.signRefreshToken(user_id)
     ])
 
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refreshToken })
+    )
+
     return {
       accessToken,
       refreshToken
@@ -60,6 +66,11 @@ class UserServices {
 
   async login(payload: LoginReqBody) {
     const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(payload._id.toString())
+
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({ user_id: new ObjectId(payload._id), token: refreshToken })
+    )
+
     return {
       accessToken,
       refreshToken

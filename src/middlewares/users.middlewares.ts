@@ -1,12 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
-import { ErrorWithStatus } from '~/models/Errors'
-import userServices from '~/services/user.services'
-import { validate } from '~/utils/validation'
 import { USERS_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
 import databaseServices from '~/services/database.services'
-
-
+import userServices from '~/services/user.services'
+import { hashPassword } from '~/utils/crypto'
+import { validate } from '~/utils/validation'
 
 export const loginValidator = validate(
   checkSchema({
@@ -15,15 +13,14 @@ export const loginValidator = validate(
         errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
       },
       custom: {
-        options: async (value,{req}) => {
-          const user = await databaseServices.users.findOne({ email: value })
+        options: async (value, { req }) => {
+          const user = await databaseServices.users.findOne({ email: value, password: hashPassword(req.body.password) })
           if (user === null) {
-            throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+            throw new Error(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
           }
           req.user = user
           return true
         },
-        errorMessage: USERS_MESSAGES.EMAIL_ALREADY_EXISTS
       }
     },
     password: {
@@ -44,8 +41,7 @@ export const loginValidator = validate(
         },
         errorMessage: USERS_MESSAGES.PASWORD_MUST_BE_STRONG
       }
-    },
-
+    }
   })
 )
 
@@ -82,7 +78,6 @@ export const registerValidator = validate(
           }
           return true
         },
-        errorMessage: USERS_MESSAGES.EMAIL_ALREADY_EXISTS
       }
     },
     password: {

@@ -18,5 +18,6 @@ export const USERS_MESSAGES = {
   CONFIRM_PASSWORD_MUST_BE_STRONG: 'Confirm Password must contain at least 6 characters, 1 lowercase, 1 uppercase, 1 number, and 1 symbol',
   USER_NOT_FOUND: 'User not found',
   LOGIN_SUCCESS: 'Login success',
-  REGISTER_SUCCESS: 'Register success'
+  REGISTER_SUCCESS: 'Register success',
+  EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
 } as const
