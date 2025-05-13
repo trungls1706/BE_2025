@@ -4,15 +4,50 @@ import { ErrorWithStatus } from '~/models/Errors'
 import userServices from '~/services/user.services'
 import { validate } from '~/utils/validation'
 import { USERS_MESSAGES } from '~/constants/messages'
+import databaseServices from '~/services/database.services'
 
-export const loginValidator = (req: Request, res: Response, next: NextFunction): void => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    res.status(400).json({ message: 'Email and password is required' })
-    return
-  }
-  next()
-}
+
+
+export const loginValidator = validate(
+  checkSchema({
+    email: {
+      isEmail: {
+        errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
+      },
+      custom: {
+        options: async (value,{req}) => {
+          const user = await databaseServices.users.findOne({ email: value })
+          if (user === null) {
+            throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+          }
+          req.user = user
+          return true
+        },
+        errorMessage: USERS_MESSAGES.EMAIL_ALREADY_EXISTS
+      }
+    },
+    password: {
+      notEmpty: {
+        errorMessage: USERS_MESSAGES.PASSWORD_IS_REQUIRED
+      },
+      isLength: {
+        options: { min: 6, max: 50 },
+        errorMessage: USERS_MESSAGES.PASSWORD_LENGTH_MUST_BE_BETWEEN_6_TO_50
+      },
+      isStrongPassword: {
+        options: {
+          minLength: 6,
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1
+        },
+        errorMessage: USERS_MESSAGES.PASWORD_MUST_BE_STRONG
+      }
+    },
+
+  })
+)
 
 export const registerValidator = validate(
   checkSchema({
@@ -43,6 +78,7 @@ export const registerValidator = validate(
           const isExists = await userServices.checkEmailExists(value)
           if (isExists) {
             throw new ErrorWithStatus({ message: 'Email already exists!', status: 401 })
+            // throw new Error(USERS_MESSAGES.EMAIL_ALREADY_EXISTS)
           }
           return true
         },

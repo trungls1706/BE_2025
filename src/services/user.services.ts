@@ -1,6 +1,6 @@
 import databaseServices from './database.services'
 import User from '../models/schemas/User.schema'
-import { RegisterReqBody } from '~/models/requests/User.request'
+import { RegisterReqBody, LoginReqBody } from '~/models/requests/User.request'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
@@ -32,6 +32,10 @@ class UserServices {
     })
   }
 
+  private signAccessAndRefreshToken(usedId?: string) {
+    return Promise.all([this.signAccessToken(usedId), this.signRefreshToken(usedId)])
+  }
+
   async register(payload: RegisterReqBody) {
     const result = await databaseServices.users.insertOne(
       new User({
@@ -48,6 +52,14 @@ class UserServices {
       this.signRefreshToken(user_id)
     ])
 
+    return {
+      accessToken,
+      refreshToken
+    }
+  }
+
+  async login(payload: LoginReqBody) {
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(payload._id.toString())
     return {
       accessToken,
       refreshToken
