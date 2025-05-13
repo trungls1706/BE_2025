@@ -14,10 +14,27 @@ export const signToken = ({
   return new Promise((resolve, reject) => {
     jwt.sign(payload, privateKey, options || {}, (err, token) => {
       if (err || !token) {
-        reject(err)
+        throw reject(err)
       } else {
         resolve(token)
       }
     })
   })
 }
+
+export const verifyToken = ({
+  access_token,
+  privateKey = process.env.JWT_SECRET as string
+}: {
+  access_token: string
+  privateKey?: string
+}): Promise<any> =>
+  new Promise((resolve, reject) => {
+    jwt.verify(access_token, privateKey, (err, decoded) => {
+      if (err || !decoded) {
+        throw reject(err)
+      } else {
+        resolve(decoded as jwt.JwtPayload)
+      }
+    })
+  })

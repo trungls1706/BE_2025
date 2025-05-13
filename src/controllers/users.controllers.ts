@@ -19,3 +19,8 @@ export const registerController = async (
   const result = await userServices.register(req.body)
   res.json({ message: USERS_MESSAGES.REGISTER_SUCCESS, result })
 }
+
+
+export const logoutController = async (req: any, res: Response, next: NextFunction): Promise<void> => {
+ res.json({ message: USERS_MESSAGES.LOGOUT_SUCCESS })
+}
