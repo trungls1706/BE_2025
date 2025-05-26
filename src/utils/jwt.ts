@@ -1,14 +1,15 @@
 import jwt from 'jsonwebtoken'
+import { TokenPayload } from '~/models/requests/User.request'
 
 export const signToken = ({
   payload,
-  privateKey = process.env.JWT_SECRET as string,
+  privateKey,
   options = {
     algorithm: 'HS256'
   }
 }: {
-  payload: any
-  privateKey?: string
+  payload: string | Buffer | object
+  privateKey: string
   options?: jwt.SignOptions
 }): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -22,19 +23,21 @@ export const signToken = ({
   })
 }
 
+
 export const verifyToken = ({
-  access_token,
-  privateKey = process.env.JWT_SECRET as string
+  token,
+  secretOrPublicKey 
 }: {
-  access_token: string
-  privateKey?: string
-}): Promise<any> =>
-  new Promise((resolve, reject) => {
-    jwt.verify(access_token, privateKey, (err, decoded) => {
-      if (err || !decoded) {
-        throw reject(err)
-      } else {
-        resolve(decoded as jwt.JwtPayload)
+  token: string
+  secretOrPublicKey: string
+}): Promise<TokenPayload> => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, secretOrPublicKey, (err, decoded) => {
+      if (err) {
+        return reject(err)
       }
+      resolve(decoded as TokenPayload)
     })
   })
+}
+
