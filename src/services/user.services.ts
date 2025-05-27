@@ -51,6 +51,19 @@ class UserServices {
     })
   }
 
+  private signForgorEmailVerifyToken(usedId?: string) {
+    return signToken({
+      payload: {
+        user_id: usedId,
+        token_type: TokenType.ForgortPasswordToken
+      },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      options: {
+        expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as any
+      }
+    })
+  }
+
   private signAccessAndRefreshToken(usedId?: string) {
     return Promise.all([this.signAccessToken(usedId), this.signRefreshToken(usedId)])
   }
@@ -121,11 +134,6 @@ class UserServices {
   }
 
   async resendVerifyEmail(user_id: string) {
-
-
-    console.log('resendVerifyEmailresendVerifyEmail')
-    console.log(user_id)
-
     const email_verify_token = await this.signEmailVerifyToken(user_id)
     console.log('resend_email_verify_token', email_verify_token)
 
@@ -134,6 +142,21 @@ class UserServices {
     ])
     return {
       message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
+    }
+  }
+
+  async forgotPassword(_id: string) {
+    const forgot_password_token = await this.signForgorEmailVerifyToken(_id)
+
+    console.log('forgot_password_token', forgot_password_token)
+
+    await databaseServices.users.updateOne({ _id: new ObjectId(_id) }, [
+      { $set: { forgot_password_token, updated_at: '$$NOW' } }
+    ])
+
+    // gui email : https://
+    return {
+      message: USERS_MESSAGES.FORGOT_PASSWORD_SUCCESS
     }
   }
 

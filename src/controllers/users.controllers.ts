@@ -7,12 +7,14 @@ import {
   RegisterReqBody,
   LoginReqBody,
   TokenPayload,
-  VerifyEmailReqBody
+  VerifyEmailReqBody,
+  ForgotPasswordReqBody
 } from '~/models/requests/User.request'
 import databaseServices from '~/services/database.services'
 import userServices from '~/services/user.services'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { UserVerifyStatus } from '~/constants/enums'
+import User from '~/models/schemas/User.schema'
 
 export const loginController = async (
   req: Request<ParamsDictionary, LoginReqBody, any>,
@@ -96,4 +98,14 @@ export const resendEmailVerifyController = async (
   } catch (err) {
     console.log('err', err)
   }
+}
+
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { _id } = req.user as User
+  const result = await userServices.forgotPassword((_id as ObjectId)?.toString())
+  res.json(result)
 }
