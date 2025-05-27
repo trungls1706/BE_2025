@@ -1,6 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { JwtPayload } from 'jsonwebtoken';
 import { TokenType } from '~/constants/enums';
+
+export interface LoginReqBody {
+  name: string
+  password: string
+}
 export interface RegisterReqBody {
   name: string
   email: string
@@ -11,6 +16,10 @@ export interface RegisterReqBody {
 
 export interface LogoutReqBody {
   refresh_token: string
+}
+
+export interface VerifyEmailReqBody {
+  email_verify_token: string
 }
 
 

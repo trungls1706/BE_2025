@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express'
-import { loginController, registerController, logoutController, emailVerifyValidator } from '~/controllers/users.controllers'
+import { loginController, registerController, logoutController, verifyEmailController, resendEmailVerifyController } from '~/controllers/users.controllers'
 import {
   loginValidator,
   registerValidator,
@@ -20,6 +20,8 @@ userRouter.post('/register', registerValidator, wrapRequestHandler(registerContr
 
 userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
 
-userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyValidator))
+userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
+
+userRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendEmailVerifyController))
 
 export default userRouter

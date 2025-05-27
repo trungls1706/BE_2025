@@ -2,11 +2,23 @@ import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { LogoutReqBody, RegisterReqBody, TokenPayload } from '~/models/requests/User.request'
+import {
+  LogoutReqBody,
+  RegisterReqBody,
+  LoginReqBody,
+  TokenPayload,
+  VerifyEmailReqBody
+} from '~/models/requests/User.request'
 import databaseServices from '~/services/database.services'
 import userServices from '~/services/user.services'
+import { HTTP_STATUS } from '~/constants/httpStatus'
+import { UserVerifyStatus } from '~/constants/enums'
 
-export const loginController = async (req: any, res: Response, next: NextFunction): Promise<void> => {
+export const loginController = async (
+  req: Request<ParamsDictionary, LoginReqBody, any>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { user }: any = req // lấy user đã được attach từ middleware loginValidator
   const result = await userServices.login(user)
 
@@ -32,8 +44,8 @@ export const logoutController = async (
   res.json(result)
 }
 
-export const emailVerifyValidator = async (
-  req: Request<ParamsDictionary, any, any>,
+export const verifyEmailController = async (
+  req: Request<ParamsDictionary, any, VerifyEmailReqBody>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -43,13 +55,13 @@ export const emailVerifyValidator = async (
   })
 
   if (!user) {
-    res.status(404).json({ message: USERS_MESSAGES.USER_NOT_FOUND })
+    res.status(HTTP_STATUS.NOT_FOUND).json({ message: USERS_MESSAGES.USER_NOT_FOUND })
   }
 
   // đã verify rồi, không báo lỗi
   // trả về 200, đã verify
   if (user?.email_verify_token === '') {
-    res.status(200).json({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
+    res.status(HTTP_STATUS.OK).json({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
   }
 
   const result = await userServices.verifyEmail(user_id)
@@ -58,4 +70,30 @@ export const emailVerifyValidator = async (
     message: USERS_MESSAGES.EMAIL_VERIFIED_SUCCESS,
     result
   })
+}
+export const resendEmailVerifyController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { user_id } = req.decoded_authorization as TokenPayload
+    const user = await databaseServices.users.findOne({
+      _id: new ObjectId(user_id)
+    })
+
+    if (!user) {
+      res.status(HTTP_STATUS.NOT_FOUND).json({ message: USERS_MESSAGES.USER_NOT_FOUND })
+    }
+
+    if (user?.verify === UserVerifyStatus.Verified) {
+      res.json({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
+    }
+
+    const result = await userServices.resendVerifyEmail(user_id)
+
+    res.json(result)
+  } catch (err) {
+    console.log('err', err)
+  }
 }
