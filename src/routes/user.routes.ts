@@ -1,12 +1,21 @@
 import { Request, Response, Router } from 'express'
-import { loginController, registerController, logoutController, verifyEmailController, resendEmailVerifyController, forgotPasswordController } from '~/controllers/users.controllers'
+import {
+  loginController,
+  registerController,
+  logoutController,
+  verifyEmailController,
+  resendEmailVerifyController,
+  forgotPasswordController,
+  verifyForgotPasswordController
+} from '~/controllers/users.controllers'
 import {
   loginValidator,
   registerValidator,
   accessTokenValidator,
   refreshTokenValidator,
   emailVerifyTokenValidator,
-  forgotPasswordValidator
+  forgotPasswordValidator,
+  verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handler'
 const userRouter = Router()
@@ -25,6 +34,12 @@ userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(v
 
 userRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendEmailVerifyController))
 
-userRouter.post('/reset-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
+userRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
+
+userRouter.post(
+  '/verify-forgot-password',
+  verifyForgotPasswordTokenValidator,
+  wrapRequestHandler(verifyForgotPasswordController)
+)
 
 export default userRouter

@@ -109,3 +109,11 @@ export const forgotPasswordController = async (
   const result = await userServices.forgotPassword((_id as ObjectId)?.toString())
   res.json(result)
 }
+
+export const verifyForgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  res.json({ message: USERS_MESSAGES.FORGOT_PASSWORD_VERIFY_SUCCESS })
+}
