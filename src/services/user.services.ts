@@ -163,6 +163,16 @@ class UserServices {
   async checkEmailExists(email: string) {
     return Boolean(await databaseServices.users.findOne({ email }))
   }
+
+  async resetPassword(user_id: string, password: string) {
+    const password_hash = hashPassword(password)
+    await databaseServices.users.updateOne({ _id: new ObjectId(user_id) }, [
+      { $set: { password: hashPassword(password), forgot_password_token: '', updated_at: '$$NOW' } }
+    ])
+    return {
+      message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS
+    }
+  }
 }
 
 const userServices = new UserServices()

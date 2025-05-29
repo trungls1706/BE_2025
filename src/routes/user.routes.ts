@@ -6,7 +6,8 @@ import {
   verifyEmailController,
   resendEmailVerifyController,
   forgotPasswordController,
-  verifyForgotPasswordController
+  verifyForgotPasswordController,
+  resetPasswprdController
 } from '~/controllers/users.controllers'
 import {
   loginValidator,
@@ -15,7 +16,8 @@ import {
   refreshTokenValidator,
   emailVerifyTokenValidator,
   forgotPasswordValidator,
-  verifyForgotPasswordTokenValidator
+  verifyForgotPasswordTokenValidator,
+  resetPasswordValidator
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handler'
 const userRouter = Router()
@@ -40,6 +42,12 @@ userRouter.post(
   '/verify-forgot-password',
   verifyForgotPasswordTokenValidator,
   wrapRequestHandler(verifyForgotPasswordController)
+)
+
+userRouter.post(
+  '/reset-password',
+  resetPasswordValidator,
+  wrapRequestHandler(resetPasswprdController)
 )
 
 export default userRouter
