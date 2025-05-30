@@ -1,28 +1,30 @@
 import { Request, Response, Router } from 'express'
 import {
-  loginController,
-  registerController,
-  logoutController,
-  verifyEmailController,
-  resendEmailVerifyController,
   forgotPasswordController,
-  verifyForgotPasswordController,
-  resetPasswprdController,
   getMeController,
-  updateMeController
+  loginController,
+  logoutController,
+  registerController,
+  resendEmailVerifyController,
+  resetPasswprdController,
+  updateMeController,
+  verifyEmailController,
+  verifyForgotPasswordController
 } from '~/controllers/users.controllers'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
-  loginValidator,
-  registerValidator,
   accessTokenValidator,
-  refreshTokenValidator,
   emailVerifyTokenValidator,
   forgotPasswordValidator,
-  verifyForgotPasswordTokenValidator,
+  loginValidator,
+  refreshTokenValidator,
+  registerValidator,
   resetPasswordValidator,
-  verifyUserValidator,
-  updateMeValidator
+  updateMeValidator,
+  verifyForgotPasswordTokenValidator,
+  verifyUserValidator
 } from '~/middlewares/users.middlewares'
+import { UpdateMeReqBody } from '~/models/requests/User.request'
 import { wrapRequestHandler } from '~/utils/handler'
 const userRouter = Router()
 
@@ -56,6 +58,7 @@ userRouter.patch(
   accessTokenValidator,
   verifyUserValidator,
   updateMeValidator,
+  filterMiddleware<UpdateMeReqBody>(['name', 'date_of_birth', 'bio', 'location', 'website', 'username', 'avatar', 'cover_photo']),
   wrapRequestHandler(updateMeController)
 )
 
