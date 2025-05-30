@@ -20,7 +20,8 @@ import {
   forgotPasswordValidator,
   verifyForgotPasswordTokenValidator,
   resetPasswordValidator,
-  verifyUserValidator
+  verifyUserValidator,
+  updateMeValidator
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handler'
 const userRouter = Router()
@@ -30,7 +31,6 @@ userRouter.get('/test', (req: Request, res: Response) => {
 })
 
 userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
-
 
 userRouter.post('/login', loginValidator, loginController)
 
@@ -51,6 +51,12 @@ userRouter.post(
 )
 
 userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswprdController))
-userRouter.patch('/me', accessTokenValidator, verifyUserValidator, wrapRequestHandler(updateMeController))
+userRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifyUserValidator,
+  updateMeValidator,
+  wrapRequestHandler(updateMeController)
+)
 
 export default userRouter

@@ -36,6 +36,19 @@ export const USERS_MESSAGES = {
   FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Forgot password token is required',
   FORGOT_PASSWORD_TOKEN_IS_INVALID: 'Forgot password token is invalid',
   RESET_PASSWORD_SUCCESS: 'Reset password success',
-  GET_ME_SUCCESS:'Get me success',
-  USER_NOT_VERIFIED:'User not verified'
+  GET_ME_SUCCESS: 'Get me success',
+  USER_NOT_VERIFIED: 'User not verified',
+  BIO_MUST_BE_STRING: 'Bio must be string',
+  BIO_LENGTH_MUST_BE_BETWEEN_1_TO_200: 'Bio length must be between 1 to 200',
+  LOCATION_MUST_BE_STRING: 'LOCATION must be string',
+  LOCATION_LENGTH_MUST_BE_BETWEEN_1_TO_200: 'LOCATION length must be between 1 to 200',
+  WEBSITE_MUST_BE_STRING: 'WEBSITE must be string',
+  WEBSITE_LENGTH_MUST_BE_BETWEEN_1_TO_200: 'WEBSITE length must be between 1 to 200',
+  USER_NAME_MUST_BE_STRING: 'USER_NAME must be string',
+  USER_NAME_LENGTH_MUST_BE_BETWEEN_1_TO_200: 'USER_NAME length must be between 1 to 200',
+  AVATAR_MUST_BE_STRING: 'AVATAR must be string',
+  AVATAR_LENGTH_MUST_BE_BETWEEN_1_TO_400: 'AVATAR length must be between 1 to 400',
+  COVER_PHOTO_MUST_BE_STRING: 'COVER_PHOTO must be string',
+  COVER_PHOTO_LENGTH_MUST_BE_BETWEEN_1_TO_400: 'COVER_PHOTO length must be between 1 to 400',
+  UPDATE_ME_SUCCESS:'Update me success'
 } as const

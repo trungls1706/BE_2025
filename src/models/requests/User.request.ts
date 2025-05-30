@@ -1,21 +1,33 @@
-import { ObjectId } from 'mongodb';
-import { JwtPayload } from 'jsonwebtoken';
-import { TokenType } from '~/constants/enums';
+import { ObjectId } from 'mongodb'
+import { JwtPayload } from 'jsonwebtoken'
+import { TokenType } from '~/constants/enums'
+
+export interface UpdateMeReqBody {
+  name?: string
+  date_of_birth?: Date
+  bio?: string
+  location?: string
+  website?: string
+  username?: string
+  avatar?: string
+  cover_photo?: string
+}
 
 export interface LoginReqBody {
   name: string
   password: string
 }
 
-export interface  ForgotPasswordReqBody{
+export interface ForgotPasswordReqBody {
   email: string
 }
 
-export interface  ResetPasswordReqBody{
+export interface ResetPasswordReqBody {
   password: string
   confirm_password: string
   forgot_password_token: string
 }
+
 export interface RegisterReqBody {
   name: string
   email: string
@@ -32,24 +44,23 @@ export interface VerifyEmailReqBody {
   email_verify_token: string
 }
 
-
 export interface LoginReqBody {
-_id: ObjectId;
-  name: string;
-  email: string;
-  date_of_birth: Date;
-  password: string;
-  created_at: Date;
-  updated_at: Date;
-  email_verify_token: string;
-  forgot_password_token: string;
-  verify: number;
-  bio: string | null;
-  location: string | null;
-  website: string | null;
-  username: string | null;
-  avatar: string | null;
-  cover_photo: string | null;
+  _id: ObjectId
+  name: string
+  email: string
+  date_of_birth: Date
+  password: string
+  created_at: Date
+  updated_at: Date
+  email_verify_token: string
+  forgot_password_token: string
+  verify: number
+  bio: string | null
+  location: string | null
+  website: string | null
+  username: string | null
+  avatar: string | null
+  cover_photo: string | null
 }
 
 export interface TokenPayload extends JwtPayload {
