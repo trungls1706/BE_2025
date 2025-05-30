@@ -23,7 +23,8 @@ export const loginController = async (
   next: NextFunction
 ): Promise<void> => {
   const { user }: any = req // lấy user đã được attach từ middleware loginValidator
-  const result = await userServices.login(user)
+  const user_id = user._id as ObjectId
+  const result = await userServices.login({ user_id: user_id.toString(), verify: user.verify })
 
   res.json({ message: USERS_MESSAGES.LOGIN_SUCCESS, result })
 }
@@ -106,8 +107,8 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { _id } = req.user as User
-  const result = await userServices.forgotPassword((_id as ObjectId)?.toString())
+  const { _id, verify } = req.user as User
+  const result = await userServices.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
   res.json(result)
 }
 
@@ -130,7 +131,7 @@ export const resetPasswprdController = async (
   res.json(result)
 }
 
-export const getmeController = async (
+export const getMeController = async (
   req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
   res: Response,
   next: NextFunction
@@ -143,3 +144,10 @@ export const getmeController = async (
   })
 }
 
+export const updateMeController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  res.json({})
+}

@@ -8,7 +8,8 @@ import {
   forgotPasswordController,
   verifyForgotPasswordController,
   resetPasswprdController,
-  getmeController
+  getMeController,
+  updateMeController
 } from '~/controllers/users.controllers'
 import {
   loginValidator,
@@ -18,7 +19,8 @@ import {
   emailVerifyTokenValidator,
   forgotPasswordValidator,
   verifyForgotPasswordTokenValidator,
-  resetPasswordValidator
+  resetPasswordValidator,
+  verifyUserValidator
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handler'
 const userRouter = Router()
@@ -27,7 +29,7 @@ userRouter.get('/test', (req: Request, res: Response) => {
   res.json({ message: 'Hello from a private route!2yarn' })
 })
 
-userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getmeController))
+userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 
 userRouter.post('/login', loginValidator, loginController)
@@ -48,10 +50,7 @@ userRouter.post(
   wrapRequestHandler(verifyForgotPasswordController)
 )
 
-userRouter.post(
-  '/reset-password',
-  resetPasswordValidator,
-  wrapRequestHandler(resetPasswprdController)
-)
+userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswprdController))
+userRouter.patch('/me', accessTokenValidator, verifyUserValidator, wrapRequestHandler(updateMeController))
 
 export default userRouter

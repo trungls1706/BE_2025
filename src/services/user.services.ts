@@ -12,11 +12,12 @@ import { UserVerifyStatus } from '~/constants/enums'
 class UserServices {
   constructor() {}
 
-  private signAccessToken(usedId?: string) {
+  private signAccessToken({ user_id, verify }: { user_id?: string; verify?: UserVerifyStatus }) {
     return signToken({
       payload: {
-        user_id: usedId,
-        token_type: TokenType.AccessToken
+        user_id,
+        token_type: TokenType.AccessToken,
+        verify
       },
       privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string,
       options: {
@@ -25,11 +26,12 @@ class UserServices {
     })
   }
 
-  private signRefreshToken(usedId?: string) {
+  private signRefreshToken({ user_id, verify }: { user_id?: string; verify?: UserVerifyStatus }) {
     return signToken({
       payload: {
-        user_id: usedId,
-        token_type: TokenType.RefreshToken
+        user_id,
+        token_type: TokenType.RefreshToken,
+        verify
       },
       privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
       options: {
@@ -38,11 +40,12 @@ class UserServices {
     })
   }
 
-  private signEmailVerifyToken(usedId?: string) {
+  private signEmailVerifyToken({ user_id, verify }: { user_id?: string; verify?: UserVerifyStatus }) {
     return signToken({
       payload: {
-        user_id: usedId,
-        token_type: TokenType.EmailVerifyToken
+        user_id,
+        token_type: TokenType.EmailVerifyToken,
+        verify
       },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
       options: {
@@ -51,11 +54,12 @@ class UserServices {
     })
   }
 
-  private signForgorEmailVerifyToken(usedId?: string) {
+  private signForgorEmailVerifyToken({ user_id, verify }: { user_id?: string; verify?: UserVerifyStatus }) {
     return signToken({
       payload: {
-        user_id: usedId,
-        token_type: TokenType.ForgortPasswordToken
+        user_id,
+        token_type: TokenType.ForgortPasswordToken,
+        verify
       },
       privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
       options: {
@@ -64,13 +68,16 @@ class UserServices {
     })
   }
 
-  private signAccessAndRefreshToken(usedId?: string) {
-    return Promise.all([this.signAccessToken(usedId), this.signRefreshToken(usedId)])
+  private signAccessAndRefreshToken({ user_id, verify }: { user_id?: string; verify?: UserVerifyStatus }) {
+    return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
 
   async register(payload: RegisterReqBody) {
     const user_id = new ObjectId()
-    const email_verify_token = await this.signEmailVerifyToken(user_id.toString())
+    const email_verify_token = await this.signEmailVerifyToken({
+      user_id: user_id.toString(),
+      verify: UserVerifyStatus.Unverified
+    })
 
     await databaseServices.users.insertOne(
       new User({
@@ -82,10 +89,10 @@ class UserServices {
       })
     )
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.signAccessToken(user_id.toString()),
-      this.signRefreshToken(user_id.toString())
-    ])
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken({
+      user_id: user_id.toString(),
+      verify: UserVerifyStatus.Unverified
+    })
 
     await databaseServices.refreshTokens.insertOne(
       new RefreshToken({ user_id: new ObjectId(user_id), token: refreshToken })
@@ -96,11 +103,14 @@ class UserServices {
     }
   }
 
-  async login(payload: LoginReqBody) {
-    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(payload._id.toString())
+  async login({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken({
+      user_id,
+      verify
+    })
 
     await databaseServices.refreshTokens.insertOne(
-      new RefreshToken({ user_id: new ObjectId(payload._id), token: refreshToken })
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refreshToken })
     )
 
     return {
@@ -120,7 +130,7 @@ class UserServices {
     // Tạo giá trị cập nhật
     // MongoDB cập nhật giá trị
     const [token] = await Promise.all([
-      this.signAccessAndRefreshToken(user_id),
+      this.signAccessAndRefreshToken({ user_id, verify: UserVerifyStatus.Verified }),
       databaseServices.users.updateOne(
         { _id: new ObjectId(user_id) },
         [{ $set: { email_verify_token: '', verify: UserVerifyStatus.Verified, updated_at: '$$NOW' } }]
@@ -134,7 +144,7 @@ class UserServices {
   }
 
   async resendVerifyEmail(user_id: string) {
-    const email_verify_token = await this.signEmailVerifyToken(user_id)
+    const email_verify_token = await this.signEmailVerifyToken({ user_id, verify: UserVerifyStatus.Unverified })
     console.log('resend_email_verify_token', email_verify_token)
 
     await databaseServices.users.updateOne({ _id: new ObjectId(user_id) }, [
@@ -145,12 +155,12 @@ class UserServices {
     }
   }
 
-  async forgotPassword(_id: string) {
-    const forgot_password_token = await this.signForgorEmailVerifyToken(_id)
+  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const forgot_password_token = await this.signForgorEmailVerifyToken({ user_id, verify })
 
     console.log('forgot_password_token', forgot_password_token)
 
-    await databaseServices.users.updateOne({ _id: new ObjectId(_id) }, [
+    await databaseServices.users.updateOne({ _id: new ObjectId(user_id) }, [
       { $set: { forgot_password_token, updated_at: '$$NOW' } }
     ])
 
