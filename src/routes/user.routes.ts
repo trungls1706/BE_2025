@@ -7,7 +7,8 @@ import {
   resendEmailVerifyController,
   forgotPasswordController,
   verifyForgotPasswordController,
-  resetPasswprdController
+  resetPasswprdController,
+  getmeController
 } from '~/controllers/users.controllers'
 import {
   loginValidator,
@@ -25,6 +26,9 @@ const userRouter = Router()
 userRouter.get('/test', (req: Request, res: Response) => {
   res.json({ message: 'Hello from a private route!2yarn' })
 })
+
+userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getmeController))
+
 
 userRouter.post('/login', loginValidator, loginController)
 

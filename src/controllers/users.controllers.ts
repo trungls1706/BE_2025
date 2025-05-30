@@ -129,3 +129,17 @@ export const resetPasswprdController = async (
   const result = await userServices.resetPassword(user_id, password)
   res.json(result)
 }
+
+export const getmeController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const user = await userServices.getMe(user_id)
+  res.json({
+    user,
+    message: USERS_MESSAGES.GET_ME_SUCCESS
+  })
+}
+
