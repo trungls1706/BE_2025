@@ -50,5 +50,8 @@ export const USERS_MESSAGES = {
   AVATAR_LENGTH_MUST_BE_BETWEEN_1_TO_400: 'AVATAR length must be between 1 to 400',
   COVER_PHOTO_MUST_BE_STRING: 'COVER_PHOTO must be string',
   COVER_PHOTO_LENGTH_MUST_BE_BETWEEN_1_TO_400: 'COVER_PHOTO length must be between 1 to 400',
-  UPDATE_ME_SUCCESS:'Update me success'
+  UPDATE_ME_SUCCESS:'Update me success',
+  FOLLOW_SUCCESS:'Follow success',
+  FOLLOW_USER_ID_IS_INVALID:'Follow user id is invalid',
+  FOLLOW_ALREADY:'Follow already'
 } as const

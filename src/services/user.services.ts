@@ -8,6 +8,7 @@ import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { UserVerifyStatus } from '~/constants/enums'
+import Follower from '~/models/schemas/Follower.schema'
 
 class UserServices {
   constructor() {}
@@ -203,7 +204,7 @@ class UserServices {
       { _id: new ObjectId(user_id) },
       {
         $set: {
-          ...body,
+          ...body
         },
         $currentDate: { updated_at: true }
       },
@@ -217,6 +218,25 @@ class UserServices {
       }
     )
     return user
+  }
+
+  async follow({ user_id, follow_user_id }: { user_id: string; follow_user_id: string }) {
+    const follower = await databaseServices.followers.findOne({
+      user_id: new ObjectId(user_id),
+      folower_user_id: new ObjectId(follow_user_id)
+    })
+    if (follower) {
+      return {
+        message: USERS_MESSAGES.FOLLOW_ALREADY
+      }
+    }
+
+    await databaseServices.followers.insertOne(
+      new Follower({ user_id: new ObjectId(user_id), folower_user_id: new ObjectId(follow_user_id) })
+    )
+    return {
+      message: USERS_MESSAGES.FOLLOW_SUCCESS
+    }
   }
 }
 
