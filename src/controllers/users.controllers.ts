@@ -11,7 +11,8 @@ import {
   ForgotPasswordReqBody,
   ResetPasswordReqBody,
   UpdateMeReqBody,
-  FollowReqBody
+  FollowReqBody,
+  UnFollowReqParams
 } from '~/models/requests/User.request'
 import databaseServices from '~/services/database.services'
 import userServices from '~/services/user.services'
@@ -166,7 +167,29 @@ export const followController = async (
   next: NextFunction
 ): Promise<void> => {
   const { user_id } = req.decoded_authorization as TokenPayload
-  const { follow_user_id} = req.body
+  const { follow_user_id } = req.body
   const result = await userServices.follow({ user_id, follow_user_id })
+  res.json(result)
+}
+
+export const unFollowController = async (
+  req: Request<ParamsDictionary, any, FollowReqBody>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { follow_user_id } = req.body
+  const result = await userServices.follow({ user_id, follow_user_id })
+  res.json(result)
+}
+
+export const unfollowController = async (
+  req: Request<UnFollowReqParams>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { user_id: follow_user_id } = req.params
+  const result = await userServices.unfollow({ user_id, follow_user_id })
   res.json(result)
 }

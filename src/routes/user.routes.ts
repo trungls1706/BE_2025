@@ -10,7 +10,8 @@ import {
   updateMeController,
   verifyEmailController,
   verifyForgotPasswordController,
-  followController
+  followController,
+  unfollowController
 } from '~/controllers/users.controllers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
@@ -24,7 +25,8 @@ import {
   updateMeValidator,
   verifyForgotPasswordTokenValidator,
   verifyUserValidator,
-  followValidator
+  followValidator,
+  unFollowValidator
 } from '~/middlewares/users.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/User.request'
 import { wrapRequestHandler } from '~/utils/handler'
@@ -80,6 +82,14 @@ userRouter.post(
   verifyUserValidator,
   followValidator,
   wrapRequestHandler(followController)
+)
+
+userRouter.delete(
+  '/follow/:follow_user_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  unFollowValidator,
+  wrapRequestHandler(unfollowController)
 )
 
 export default userRouter

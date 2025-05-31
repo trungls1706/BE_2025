@@ -1,11 +1,15 @@
 import { ObjectId } from 'mongodb'
 import { JwtPayload } from 'jsonwebtoken'
 import { TokenType } from '~/constants/enums'
+import { ParamsDictionary } from 'express-serve-static-core'
 
 export interface FollowReqBody {
   follow_user_id: string
 }
 
+export interface UnFollowReqParams extends ParamsDictionary {
+  user_id: string
+}
 export interface UpdateMeReqBody {
   name?: string
   date_of_birth?: Date
