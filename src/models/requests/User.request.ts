@@ -3,6 +3,11 @@ import { JwtPayload } from 'jsonwebtoken'
 import { TokenType } from '~/constants/enums'
 import { ParamsDictionary } from 'express-serve-static-core'
 
+export interface ChangePasswordReqBody {
+  old_password: string
+  confirm_password: string
+  password: string
+}
 export interface FollowReqBody {
   follow_user_id: string
 }
