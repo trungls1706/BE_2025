@@ -4,10 +4,14 @@ import usersRouter from '~/routes/user.routes'
 import databaseServices from '~/services/database.services'
 import { defaultErrorHandler } from './middlewares/erros.middlewares'
 import mediasRouter from './routes/media.routes'
+import { initFolder } from './utils/file'
 databaseServices.connect()
 
-const port = 3000
+const port = 4000
 const app = express()
+
+// tao thu muc 
+initFolder('uploads')
 
 app.use(morgan('dev'))
 

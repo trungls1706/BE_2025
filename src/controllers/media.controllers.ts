@@ -6,13 +6,6 @@ import fs from 'fs'
 import { MEDIA_MESSAGES } from '~/constants/messages'
 import { LoginReqBody } from '~/models/requests/User.request'
 
-const uploadDir = path.resolve('')
-
-// Tạo thư mục nếu chưa có
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true })
-}
-
 export const uploadSingleImageController = async (
   req: Request<ParamsDictionary, LoginReqBody, any>,
   res: Response,
