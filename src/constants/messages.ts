@@ -62,3 +62,8 @@ export const USERS_MESSAGES = {
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   CHANGE_PASSWORD_SUCCESS: 'Change password success'
 } as const
+
+export const MEDIA_MESSAGES = {
+  UPLOAD_IMAGE_SUCCESS: 'Upload image success',
+  UPLOAD_IMAGE_FAILED: 'Upload image failed'
+} as const
