@@ -140,6 +140,9 @@ class UserServices {
     ])
 
     const [accessToken, refreshToken] = token
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refreshToken })
+    )
 
     return { accessToken, refreshToken }
   }
@@ -258,11 +261,10 @@ class UserServices {
     }
   }
 
-  async changePassword ({ user_id, password }: { user_id: string; password: string }) {
+  async changePassword({ user_id, password }: { user_id: string; password: string }) {
     await databaseServices.users.updateOne({ _id: new ObjectId(user_id) }, [
       { $set: { password: hashPassword(password), updated_at: '$$NOW' } }
     ])
-    
     return {
       message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS
     }
