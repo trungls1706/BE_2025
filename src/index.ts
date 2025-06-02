@@ -5,13 +5,14 @@ import databaseServices from '~/services/database.services'
 import { defaultErrorHandler } from './middlewares/erros.middlewares'
 import mediasRouter from './routes/media.routes'
 import { initFolder } from './utils/file'
+import { UPLOAD_TEMP_DIR } from './constants/dir'
 databaseServices.connect()
 
 const port = 4000
 const app = express()
 
 // tao thu muc 
-initFolder('uploads')
+initFolder(UPLOAD_TEMP_DIR)
 
 app.use(morgan('dev'))
 

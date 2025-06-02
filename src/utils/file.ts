@@ -1,8 +1,9 @@
-import fs from 'fs'
 import { Request } from 'express'
-import formidable from 'formidable'
-import { MEDIA_MESSAGES } from '~/constants/messages'
+import formidable, { File } from 'formidable'
+import fs from 'fs'
 import path from 'path'
+import { UPLOAD_TEMP_DIR } from '~/constants/dir'
+import { MEDIA_MESSAGES } from '~/constants/messages'
 
 export const initFolder = (path: string) => {
   if (!fs.existsSync(path)) {
@@ -11,7 +12,7 @@ export const initFolder = (path: string) => {
 }
 
 export const handleUploadSingleImage = async (req: Request) => {
-  const uploadDir = path.resolve('uploads')
+  const uploadDir = path.resolve(UPLOAD_TEMP_DIR)
 
   const form = formidable({
     uploadDir: uploadDir,
@@ -28,7 +29,7 @@ export const handleUploadSingleImage = async (req: Request) => {
     }
   })
 
-  return new Promise((resolve, reject) => {
+  return new Promise<File>((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {
       console.log(err)
       console.log(fields)
@@ -39,7 +40,13 @@ export const handleUploadSingleImage = async (req: Request) => {
       if (!Boolean(files.image)) {
         return reject(new Error(MEDIA_MESSAGES.UPLOAD_IMAGE_FAILED))
       }
-      resolve(files)
+      resolve((files.image as File[])[0])
     })
   })
+}
+
+export const getNameFromFullname = (fullname: string) => {
+  const nameArr = fullname.split('.')
+  nameArr.pop()
+  return nameArr.join('')
 }
