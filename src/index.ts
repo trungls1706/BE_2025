@@ -2,13 +2,14 @@ import express from 'express'
 import morgan from 'morgan'
 import usersRouter from '~/routes/user.routes'
 import databaseServices from '~/services/database.services'
+import { UPLOAD_TEMP_DIR } from './constants/dir'
 import { defaultErrorHandler } from './middlewares/erros.middlewares'
 import mediasRouter from './routes/media.routes'
 import { initFolder } from './utils/file'
-import { UPLOAD_TEMP_DIR } from './constants/dir'
+
 databaseServices.connect()
 
-const port = 4000
+const port = process.env.PORT || 4000
 const app = express()
 
 // tao thu muc 
