@@ -11,15 +11,15 @@ export const initFolder = (path: string) => {
   }
 }
 
-export const handleUploadSingleImage = async (req: Request) => {
+export const handleUploadImage = async (req: Request) => {
   const uploadDir = path.resolve(UPLOAD_TEMP_DIR)
 
   const form = formidable({
     uploadDir: uploadDir,
-    maxFiles: 1,
+    maxFiles: 4,
     keepExtensions: true,
     maxFileSize: 1024 * 1024, // 1MB
-    maxTotalFileSize: 1228800, // 1.2MB
+    maxTotalFileSize: 5 * 1228800, // 1.2MB
     filter: function ({ name, originalFilename, mimetype }) {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
       if (!valid) {
@@ -29,7 +29,7 @@ export const handleUploadSingleImage = async (req: Request) => {
     }
   })
 
-  return new Promise<File>((resolve, reject) => {
+  return new Promise<File[]>((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {
       console.log(err)
       console.log(fields)
@@ -40,7 +40,7 @@ export const handleUploadSingleImage = async (req: Request) => {
       if (!Boolean(files.image)) {
         return reject(new Error(MEDIA_MESSAGES.UPLOAD_IMAGE_FAILED))
       }
-      resolve((files.image as File[])[0])
+      resolve(files.image as File[])
     })
   })
 }

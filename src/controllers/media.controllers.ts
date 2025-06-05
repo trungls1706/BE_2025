@@ -6,12 +6,12 @@ import { UPLOAD_DIR } from '~/constants/dir'
 import { LoginReqBody } from '~/models/requests/User.request'
 import mediasServices from '~/services/media.services'
 
-export const uploadSingleImageController = async (
+export const uploadImageController = async (
   req: Request<ParamsDictionary, LoginReqBody, any>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const result = await mediasServices.handleUploadSingleImage(req)
+  const result = await mediasServices.handleUploadImage(req)
 
   res.json({
     message: 'Upload image successfully',
