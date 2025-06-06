@@ -5,6 +5,7 @@ import {
   loginController,
   logoutController,
   registerController,
+  refreshTokenController,
   resendEmailVerifyController,
   resetPasswprdController,
   updateMeController,
@@ -45,6 +46,8 @@ userRouter.post('/login', loginValidator, loginController)
 userRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
 
 userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+
+userRouter.post('/refresh-token', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(refreshTokenController))
 
 userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
 

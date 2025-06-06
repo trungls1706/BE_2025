@@ -62,7 +62,8 @@ export const USERS_MESSAGES = {
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
   UPLOAD_VIDEO_SUCCESS: 'Upload video success',
-  UPDATRE_IMAGE_SUCCESS: 'Updatre image success'
+  UPDATED_IMAGE_SUCCESS: 'Updatre image success',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token success'
 } as const
 
 export const MEDIA_MESSAGES = {

@@ -269,6 +269,19 @@ class UserServices {
       message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS
     }
   }
+
+  async refreshToken({ user_id, verify, refresh_token }: { user_id: string; verify: UserVerifyStatus;refresh_token: string }) {
+    const [new_accessToken, new_refreshToken] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify }),
+      databaseServices.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+
+    return {
+      new_accessToken,
+      new_refreshToken
+    }
+  }
 }
 
 const userServices = new UserServices()

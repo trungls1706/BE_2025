@@ -13,7 +13,8 @@ import {
   UpdateMeReqBody,
   FollowReqBody,
   UnFollowReqParams,
-  ChangePasswordReqBody
+  ChangePasswordReqBody,
+  RefreshTokenReqBody
 } from '~/models/requests/User.request'
 import databaseServices from '~/services/database.services'
 import userServices from '~/services/user.services'
@@ -50,6 +51,20 @@ export const logoutController = async (
   const { refresh_token } = req.body
   const result = await userServices.logout(refresh_token)
   res.json(result)
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, RefreshTokenReqBody, any>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { refresh_token } = req.body
+  const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+  const result = await userServices.refreshToken({ user_id, verify, refresh_token })
+  res.json({
+    message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
+    result
+  })
 }
 
 export const verifyEmailController = async (
@@ -205,4 +220,3 @@ export const changePasswordController = async (
   const result = await userServices.changePassword({ user_id, password })
   res.json(result)
 }
-

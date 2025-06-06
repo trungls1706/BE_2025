@@ -28,7 +28,7 @@ export const uploadImageController = async (
   const result = await mediasServices.uploadImage(req)
 
   res.json({
-    message: USERS_MESSAGES.UPDATRE_IMAGE_SUCCESS,
+    message: USERS_MESSAGES.UPDATED_IMAGE_SUCCESS,
     result
   })
 }
