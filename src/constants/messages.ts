@@ -60,10 +60,13 @@ export const USERS_MESSAGES = {
   USER_NAME_IS_INVALID: 'User name is invalid',
   USER_NAME_ALREADY_EXISTS: 'User name already exists',
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
-  CHANGE_PASSWORD_SUCCESS: 'Change password success'
+  CHANGE_PASSWORD_SUCCESS: 'Change password success',
+  UPLOAD_VIDEO_SUCCESS: 'Upload video success',
+  UPDATRE_IMAGE_SUCCESS: 'Updatre image success'
 } as const
 
 export const MEDIA_MESSAGES = {
   UPLOAD_IMAGE_SUCCESS: 'Upload image success',
-  UPLOAD_IMAGE_FAILED: 'Upload image failed'
+  UPLOAD_IMAGE_FAILED: 'Upload image failed',
+  UPLOAD_VIDEO_FAILED: 'Upload video failed'
 } as const

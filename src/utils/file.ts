@@ -2,7 +2,7 @@ import { Request } from 'express'
 import formidable, { File } from 'formidable'
 import fs from 'fs'
 import path from 'path'
-import { UPLOAD_TEMP_IMAGE_DIR } from '~/constants/dir'
+import { UPLOAD_TEMP_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { MEDIA_MESSAGES } from '~/constants/messages'
 
 export const initFolder = (path: string) => {
@@ -31,9 +31,6 @@ export const handleUploadImage = async (req: Request) => {
 
   return new Promise<File[]>((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {
-      console.log(err)
-      console.log(fields)
-      console.log(files)
       if (err) {
         return reject(err)
       }
@@ -46,7 +43,7 @@ export const handleUploadImage = async (req: Request) => {
 }
 
 export const handleUploadVideo = async (req: Request) => {
-  const uploadDir = path.resolve(UPLOAD_TEMP_IMAGE_DIR)
+  const uploadDir = path.resolve(UPLOAD_VIDEO_DIR)
 
   const form = formidable({
     uploadDir: uploadDir,
@@ -60,16 +57,21 @@ export const handleUploadVideo = async (req: Request) => {
 
   return new Promise<File[]>((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {
-      console.log(err)
-      console.log(fields)
-      console.log(files)
       if (err) {
         return reject(err)
       }
-      if (!Boolean(files.image)) {
-        return reject(new Error(MEDIA_MESSAGES.UPLOAD_IMAGE_FAILED))
+      if (!Boolean(files.video)) {
+        return reject(new Error(MEDIA_MESSAGES.UPLOAD_VIDEO_FAILED))
       }
-      resolve(files.image as File[])
+
+      const videos = files.video as File[]
+      videos.forEach((video) => {
+        const ext = getExtension(video.originalFilename as string)
+        fs.renameSync(video.filepath, video.filepath + '.' + ext)
+        // video.newFilename = video.newFilename + '.' + ext
+      })
+
+      resolve(files.video as File[])
     })
   })
 }
@@ -78,4 +80,9 @@ export const getNameFromFullname = (fullname: string) => {
   const nameArr = fullname.split('.')
   nameArr.pop()
   return nameArr.join('')
+}
+
+export const getExtension = (fullname: string) => {
+  const nameArr = fullname.split('.')
+  return nameArr[nameArr.length - 1]
 }
