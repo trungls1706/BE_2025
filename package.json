@@ -43,6 +43,8 @@
     "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "mime": "^4.0.7",
+    "mime-types": "^3.0.1",
     "minimist": "^1.2.8",
     "mongodb": "^6.16.0",
     "morgan": "^1.10.0",

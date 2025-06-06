@@ -2,7 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import usersRouter from '~/routes/user.routes'
 import databaseServices from '~/services/database.services'
-import { UPLOAD_TEMP_IMAGE_DIR, UPLOAD_TEMP_VIDEO_DIR } from './constants/dir'
+import { UPLOAD_TEMP_IMAGE_DIR, UPLOAD_TEMP_VIDEO_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import { defaultErrorHandler } from './middlewares/erros.middlewares'
 import mediasRouter from './routes/media.routes'
 import staticRouter from './routes/static.routes'
@@ -23,6 +23,7 @@ app.use(express.json())
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/static', staticRouter)
+app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
 // app.use('/uploads', express.static(UPLOAD_IMAGE_DIR))
 
