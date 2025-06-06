@@ -2,7 +2,7 @@ import { Request } from 'express'
 import formidable, { File } from 'formidable'
 import fs from 'fs'
 import path from 'path'
-import { UPLOAD_TEMP_DIR } from '~/constants/dir'
+import { UPLOAD_TEMP_IMAGE_DIR } from '~/constants/dir'
 import { MEDIA_MESSAGES } from '~/constants/messages'
 
 export const initFolder = (path: string) => {
@@ -12,7 +12,7 @@ export const initFolder = (path: string) => {
 }
 
 export const handleUploadImage = async (req: Request) => {
-  const uploadDir = path.resolve(UPLOAD_TEMP_DIR)
+  const uploadDir = path.resolve(UPLOAD_TEMP_IMAGE_DIR)
 
   const form = formidable({
     uploadDir: uploadDir,
@@ -26,6 +26,35 @@ export const handleUploadImage = async (req: Request) => {
         form.emit('error' as any, new Error('File type is not valid') as any)
       }
       return valid
+    }
+  })
+
+  return new Promise<File[]>((resolve, reject) => {
+    form.parse(req, async (err, fields, files) => {
+      console.log(err)
+      console.log(fields)
+      console.log(files)
+      if (err) {
+        return reject(err)
+      }
+      if (!Boolean(files.image)) {
+        return reject(new Error(MEDIA_MESSAGES.UPLOAD_IMAGE_FAILED))
+      }
+      resolve(files.image as File[])
+    })
+  })
+}
+
+export const handleUploadVideo = async (req: Request) => {
+  const uploadDir = path.resolve(UPLOAD_TEMP_IMAGE_DIR)
+
+  const form = formidable({
+    uploadDir: uploadDir,
+    maxFiles: 1,
+    keepExtensions: true,
+    maxFileSize: 50 * 1024 * 1024, // 50MB
+    filter: function ({ name, originalFilename, mimetype }) {
+      return true
     }
   })
 

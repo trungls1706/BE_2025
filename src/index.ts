@@ -2,7 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import usersRouter from '~/routes/user.routes'
 import databaseServices from '~/services/database.services'
-import { UPLOAD_TEMP_DIR } from './constants/dir'
+import { UPLOAD_TEMP_IMAGE_DIR } from './constants/dir'
 import { defaultErrorHandler } from './middlewares/erros.middlewares'
 import mediasRouter from './routes/media.routes'
 import staticRouter from './routes/static.routes'
@@ -14,7 +14,7 @@ const port = process.env.PORT || 4000
 const app = express()
 
 // tao thu muc
-initFolder(UPLOAD_TEMP_DIR)
+initFolder(UPLOAD_TEMP_IMAGE_DIR)
 
 app.use(morgan('dev'))
 
@@ -23,7 +23,7 @@ app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/static', staticRouter)
 
-// app.use('/uploads', express.static(UPLOAD_DIR))
+// app.use('/uploads', express.static(UPLOAD_IMAGE_DIR))
 
 app.use(defaultErrorHandler)
 
